@@ -1,0 +1,41 @@
+.qty__container {
+	border: 1px solid #d6d6d6;
+}
+input[type="tel"].increase-decrease-input,
+.increase-quantity, 
+.decrease-quantity {
+	border: none;
+	cursor: pointer;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	display: inline-block;
+	padding: 0;
+	vertical-align: middle;
+}
+.increase-decrease-input {
+	font-size: 1.25rem;
+}
+.decrease-quantity {
+	left: -1px;
+}
+.increase-quantity {
+	right: -1px;
+}
+.increase-quantity, .decrease-quantity {
+	font-size: 0.9375rem;
+	height: 100%;
+	line-height: 1.5rem;
+	position: relative;
+	user-select: none;
+}
+.decrease-quantity:before, .increase-quantity:before {
+	position: absolute;
+	top: 12px;
+	right: 11px;
+}
+.decrease-quantity:hover, .increase-quantity:hover {
+	box-shadow: none;
+	background: #aab2bd;
+	color: #fff;
+}

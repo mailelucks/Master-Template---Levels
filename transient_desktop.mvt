@@ -1,0 +1,13 @@
+CONTENT SECTION:
+
+<mvt:assign name="l.settings:navigation_version" value="' '" />
+<mvt:item name="readytheme" param="navigationset( 'navigation_main' )" />
+
+HEADER HTML
+<mvt:do file="g.Module_Root $ '/modules/util/transients.mvc'" name="l.settings:nav_desktop" value="Transient_ReadyTheme_ContentSection( 'nav_desktop', 24*60*60, l.settings )" />
+<mvt:if expr="l.settings:nav_desktop">
+  &mvt:nav_desktop;
+<mvt:else>
+  <mvt:comment> <!-- Failsafe! --> </mvt:comment>
+  <mvt:item name="readytheme" param="contentsection( 'nav_desktop' )" />
+</mvt:if>

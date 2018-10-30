@@ -1,0 +1,373 @@
+
+<mvt:comment>Create structure populated with customfield group codes to pull for product specs and details</mvt:comment>
+<mvt:assign name="l.settings:groups_to_load" value="miva_array_deserialize( 'additional_info,prod_docs' )" />
+
+<mvt:comment>loop through each group</mvt:comment>
+<mvt:foreach iterator="group_to_load" array="groups_to_load">
+
+  
+  <mvt:do file="g.Module_Root $ '/modules/util/customfld.mvc'" name="l.success" value="Group_Load_Code( l.settings:group_to_load, l.settings:info_group )" />
+
+  <mvt:do file="g.Module_Root $ '/modules/util/customfld.mvc'" name="l.success" value="ProductFieldAndValueList_Load_Group( l.settings:product:id, l.settings:info_group:id, l.settings:info_group:fields )" />
+
+  <mvt:foreach iterator="field" array="info_group:fields">
+    
+    <mvt:if expr="len_var(l.settings:field:value) GT 0">
+      <mvt:assign name="l.success" value="miva_array_insert_var( l.settings:group_to_load:filtered_fields, l.settings:field, -1 )" />
+    </mvt:if>
+    
+  </mvt:foreach>
+  
+  <mvt:assign name="l.settings:field_count" value="miva_array_elements(l.settings:filtered_fields)" />
+
+  <mvt:assign name="l.settings:info_group:fields" value="l.settings:filtered_fields" />
+
+  <mvt:assign name="l.success" value="miva_array_insert_var( l.settings:info_groups, l.settings:info_group, -1 )" />
+
+</mvt:foreach>
+
+<mvt:assign name="g.mvt_debug" value="glosub( miva_array_serialize( l.settings:info_groups ), ',', asciichar( 10 ) )" />
+<!--
+@@info_groups
+=========================
+&mvt:global:mvt_debug;
+-->
+
+  <div class="column whole product-information--details">
+    <h2 class="align-center bold roboto-condensed">Product Details</h2>
+    <div class="column wrap whole tabs__container">
+      <div id="product--details__tabs" class="whole">
+        <ul class="details__tabs no-list medium-flex-show medium-flex-flow-no-wrap medium-flex-justify-between ">
+            <mvt:if expr="len_var(l.settings:product:descrip) GT 0">
+              <li class="width-auto"><h3 class="nm uppercase"><a href="#specs">Product Specifications</a></h3></li>
+            </mvt:if>
+            <mvt:foreach iterator="info_group" array="info_groups">
+              <mvt:if expr="miva_array_elements(l.settings:info_group:fields) GT 0">
+                <li class="width-auto"><h3 class="nm"><a href="#&mvt:info_group:code;">&mvt:info_group:name;</a></h3></li>
+              </mvt:if>
+            </mvt:foreach>
+<mvt:comment>            <mvt:if expr="len_var(l.settings:product:docs) GT 0">
+              <li class="width-auto"><h3 class="nm"><a href="#docs">Documentation</a></h3></li>
+            </mvt:if>
+            <mvt:if expr="len_var(l.settings:additional_info) GT 0">
+              <li class="width-auto"><h3 class="nm"><a href="#additional_info">Additional Info</a></h3></li>
+            </mvt:if></mvt:comment>
+            <mvt:if expr="len_var(l.settings:product:customfield_values:customfields:info_youtube) GT 0">
+              <li class="width-auto"><h3 class="nm"><a href="#video">Video</a></h3></li>
+            </mvt:if>
+              <li class="width-auto"><h3 class="nm"><a href="#questions">Questions &amp; Answers</a></h3></li>
+          </ul>
+        <mvt:if expr="l.settings:product:descrip">
+          <div id="specs">
+            <div class="medium-flex-show medium-flex-flow-no-wrap medium-flex-justify-between">
+              &mvt:product:descrip;
+            </div>
+          </div>
+        </mvt:if>
+        <mvt:if expr="len_var(l.settings:product:docs) GT 0">
+          <div id="docs">
+            <mvt:if expr="l.settings:product:docs:docs_cad">
+              <div class="info__block">
+                &mvt:product:docs:docs_cad;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_datasheet">
+              <div class="info__block">
+                &mvt:product:docs:docs_datasheet;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_installation">
+              <div class="info__block">
+                &mvt:product:docs:docs_installation;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_mechanical">
+              <div class="info__block">
+                &mvt:product:docs:docs_mechanical;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_price">
+              <div class="info__block">
+                &mvt:product:docs:docs_price;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_quickstart">
+              <div class="info__block">
+                &mvt:product:docs:docs_quickstart;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_software">
+              <div class="info__block">
+                &mvt:product:docs:docs_software;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_web_app">
+              <div class="info__block">
+                &mvt:product:docs:docs_web_app;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_wiring">
+              <div class="info__block">
+                &mvt:product:docs:docs_wiring;
+              </div>
+            </mvt:if>
+          </div>
+        </mvt:if>
+        <mvt:if expr="l.settings:product:descrip">
+          <div id="additional_info">
+            <mvt:if expr="len_var(l.settings:product:additional_info)">
+              <div class="column whole medium-width-auto specs-col-left np">
+                <h4 class="uppercase">Additional Information</h4>
+                <div class="features">
+                  <mvt:if expr="l.settings:product:additional_info:finish">
+                    <div class="info__block">
+                      <h5>Finish:</h5><span>&mvt:product:additional_info:finish;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:manufacturer">
+                    <div class="info__block">
+                      <h5>Manufacturer: </h5><span>&mvt:product:additional_info:manufacturer;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:warranty">
+                    <div class="info__block">
+                      <h5>Manufacturer Warranty: </h5><span>&mvt:product:additional_info:warranty;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:power">
+                    <div class="info__block">
+                      <h5>Power Requirements: </h5><span>&mvt:product:additional_info:power;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:rating">
+                    <div class="info__block">
+                      <h5>Maglocks.com Rating: </h5><span>&mvt:product:additional_info:rating;</span>
+                    </div>
+                  </mvt:if>
+                </div>
+              </div>
+            </mvt:if>
+            
+            <mvt:if expr="l.settings:product:customfield_values:customfields:specs_standard OR l.settings:product:customfield_values:customfields:specs_technical OR l.settings:product:additional_info">
+              <div class="column whole medium-width-auto specs-col-right np">
+                <mvt:if expr="l.settings:product:customfield_values:customfields:specs_standard">
+                  <h4 class="uppercase">Standard Features</h4>
+                  <div class="features info__block">
+                    &mvt:product:customfield_values:customfields:specs_standard;
+                  </div>
+                </mvt:if>
+
+                <mvt:if expr="l.settings:product:customfield_values:customfields:specs_technical">
+                  <h4 class="uppercase">Technical Specs</h4>
+                  <div class="info__block">
+                    &mvt:product:customfield_values:customfields:specs_technical;
+                  </div>
+                </mvt:if>
+              </div>
+            </mvt:if>
+          </div>    
+        </mvt:if>
+        <mvt:if expr="l.settings:product:customfield_values:customfields:info_youtube">
+          <div id="video">
+            <div class="info__block align-center">
+              &mvt:product:customfield_values:customfields:info_youtube;
+            </div>
+          </div>
+        </mvt:if>
+        <div id="questions">
+          <div class="info__block">
+            <mvt:item name="qna" param="product_questions|l.all_settings:product:code" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<mvt:assign name="l.settings:groups_to_load" value="miva_array_deserialize( 'additional_info,prod_docs' )" />
+<mvt:assign name="g.mvt_debug" value="glosub( miva_array_serialize( l.settings:groups_to_load ), ',', asciichar( 10 ) )" />
+<!--
+@@groups_
+=====================
+&mvt:global:mvt_debug;
+-->
+<mvt:foreach iterator="group_to_load" array="groups_to_load">
+  
+  <mvt:assign name="l.settings:filtered_fields" value="''" />
+  
+  <mvt:do file="g.Module_Root $ '/modules/util/customfld.mvc'" name="l.success" value="Group_Load_Code( l.settings:group_to_load, l.settings:info_group )" />
+
+  <mvt:do file="g.Module_Root $ '/modules/util/customfld.mvc'" name="l.success" value="ProductFieldAndValueList_Load_Group( l.settings:product:id, l.settings:info_group:id, l.settings:info_group:fields )" />
+
+  <mvt:foreach iterator="field" array="info_group:fields">
+    
+    <mvt:if expr="len_var(l.settings:field:value) GT 0">
+      <mvt:assign name="l.success" value="miva_array_insert_var( l.settings:filtered_fields, l.settings:field, -1 )" />
+    </mvt:if>
+    
+  </mvt:foreach>
+  
+  <mvt:assign name="l.settings:field_count" value="miva_array_elements(l.settings:filtered_fields)" />
+
+  <mvt:assign name="l.settings:info_group:fields" value="l.settings:filtered_fields" />
+
+  <mvt:assign name="l.success" value="miva_array_insert_var( l.settings:info_groups, l.settings:info_group, -1 )" />
+
+</mvt:foreach>
+
+<mvt:assign name="g.mvt_debug" value="glosub( miva_array_serialize( l.settings:info_groups ), ',', asciichar( 10 ) )" />
+<!--
+@@info_groups
+=========================
+&mvt:global:mvt_debug;
+-->
+
+  <div class="column whole product-information--details">
+    <h2 class="align-center bold roboto-condensed">Product Details</h2>
+    <div class="column wrap whole tabs__container">
+      <div id="product--details__tabs" class="whole">
+        <ul class="details__tabs no-list medium-flex-show medium-flex-flow-no-wrap medium-flex-justify-between ">
+            <mvt:if expr="len_var(l.settings:product:descrip) GT 0">
+              <li class="width-auto"><h3 class="nm uppercase"><a href="#specs">Product Specifications</a></h3></li>
+            </mvt:if>
+            <mvt:foreach iterator="info_group" array="info_groups">
+              <mvt:if expr="miva_array_elements(l.settings:info_group:fields) GT 0">
+                <li class="width-auto"><h3 class="nm"><a href="#&mvt:info_group:code;">&mvt:info_group:name;</a></h3></li>
+              </mvt:if>
+            </mvt:foreach>
+<mvt:comment>            <mvt:if expr="len_var(l.settings:product:docs) GT 0">
+              <li class="width-auto"><h3 class="nm"><a href="#docs">Documentation</a></h3></li>
+            </mvt:if>
+            <mvt:if expr="len_var(l.settings:additional_info) GT 0">
+              <li class="width-auto"><h3 class="nm"><a href="#additional_info">Additional Info</a></h3></li>
+            </mvt:if></mvt:comment>
+            <mvt:if expr="len_var(l.settings:product:customfield_values:customfields:info_youtube) GT 0">
+              <li class="width-auto"><h3 class="nm"><a href="#video">Video</a></h3></li>
+            </mvt:if>
+              <li class="width-auto"><h3 class="nm"><a href="#questions">Questions &amp; Answers</a></h3></li>
+          </ul>
+        <mvt:if expr="l.settings:product:descrip">
+          <div id="specs">
+            <div class="medium-flex-show medium-flex-flow-no-wrap medium-flex-justify-between">
+              &mvt:product:descrip;
+            </div>
+          </div>
+        </mvt:if>
+        <mvt:if expr="len_var(l.settings:product:docs) GT 0">
+          <div id="docs">
+            <mvt:if expr="l.settings:product:docs:docs_cad">
+              <div class="info__block">
+                &mvt:product:docs:docs_cad;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_datasheet">
+              <div class="info__block">
+                &mvt:product:docs:docs_datasheet;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_installation">
+              <div class="info__block">
+                &mvt:product:docs:docs_installation;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_mechanical">
+              <div class="info__block">
+                &mvt:product:docs:docs_mechanical;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_price">
+              <div class="info__block">
+                &mvt:product:docs:docs_price;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_quickstart">
+              <div class="info__block">
+                &mvt:product:docs:docs_quickstart;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_software">
+              <div class="info__block">
+                &mvt:product:docs:docs_software;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_web_app">
+              <div class="info__block">
+                &mvt:product:docs:docs_web_app;
+              </div>
+            </mvt:if>
+            <mvt:if expr="l.settings:product:docs:docs_wiring">
+              <div class="info__block">
+                &mvt:product:docs:docs_wiring;
+              </div>
+            </mvt:if>
+          </div>
+        </mvt:if>
+        <mvt:if expr="l.settings:product:descrip">
+          <div id="additional_info">
+            <mvt:if expr="len_var(l.settings:product:additional_info)">
+              <div class="column whole medium-width-auto specs-col-left np">
+                <h4 class="uppercase">Additional Information</h4>
+                <div class="features">
+                  <mvt:if expr="l.settings:product:additional_info:finish">
+                    <div class="info__block">
+                      <h5>Finish:</h5><span>&mvt:product:additional_info:finish;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:manufacturer">
+                    <div class="info__block">
+                      <h5>Manufacturer: </h5><span>&mvt:product:additional_info:manufacturer;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:warranty">
+                    <div class="info__block">
+                      <h5>Manufacturer Warranty: </h5><span>&mvt:product:additional_info:warranty;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:power">
+                    <div class="info__block">
+                      <h5>Power Requirements: </h5><span>&mvt:product:additional_info:power;</span>
+                    </div>
+                  </mvt:if>
+                  <mvt:if expr="l.settings:product:additional_info:rating">
+                    <div class="info__block">
+                      <h5>Maglocks.com Rating: </h5><span>&mvt:product:additional_info:rating;</span>
+                    </div>
+                  </mvt:if>
+                </div>
+              </div>
+            </mvt:if>
+            
+            <mvt:if expr="l.settings:product:customfield_values:customfields:specs_standard OR l.settings:product:customfield_values:customfields:specs_technical OR l.settings:product:additional_info">
+              <div class="column whole medium-width-auto specs-col-right np">
+                <mvt:if expr="l.settings:product:customfield_values:customfields:specs_standard">
+                  <h4 class="uppercase">Standard Features</h4>
+                  <div class="features info__block">
+                    &mvt:product:customfield_values:customfields:specs_standard;
+                  </div>
+                </mvt:if>
+
+                <mvt:if expr="l.settings:product:customfield_values:customfields:specs_technical">
+                  <h4 class="uppercase">Technical Specs</h4>
+                  <div class="info__block">
+                    &mvt:product:customfield_values:customfields:specs_technical;
+                  </div>
+                </mvt:if>
+              </div>
+            </mvt:if>
+          </div>    
+        </mvt:if>
+        <mvt:if expr="l.settings:product:customfield_values:customfields:info_youtube">
+          <div id="video">
+            <div class="info__block align-center">
+              &mvt:product:customfield_values:customfields:info_youtube;
+            </div>
+          </div>
+        </mvt:if>
+        <div id="questions">
+          <div class="info__block">
+            <mvt:item name="qna" param="product_questions|l.all_settings:product:code" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

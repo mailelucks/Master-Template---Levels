@@ -1,0 +1,138 @@
+<div class="column whole medium-three-fourths cart-contents">
+  <div class="row hide medium-show basket-header-row">
+    <div class="column five-eighths">Product</div>
+    <div class="column one-eighth align-center np">Qty</div>
+    <div class="column one-eighth align-center np">Price</div>
+    <div class="column one-eighth align-center np">Subtotal</div>
+  </div>
+  <div class="order-info-row">
+    <mvt:foreach iterator="item" array="order:groups">
+      <div class="row basket-product-row">
+        <div class="column one-fourth align-center">
+          <mvt:if expr="ISNULL l.settings:item:imagetypes:main">
+	    <mvt:assign name="l.settings:product:src" value="g.theme_path $ '/images/img_no_thumb.jpg'" />
+            <img src="&mvte:product:src;" alt="&mvte:item:name;" title="&mvte:item:name;" />
+          <mvt:else>
+            <img src="&mvt:global:secure_baseurl;&mvte:item:imagetypes:main;" alt="&mvte:item:name;" title="&mvte:item:name;" />
+          </mvt:if>
+        </div>
+        <div class="column three-fourths medium-three-eighths">
+          <p>
+            <mvt:if expr="l.settings:item:reorder EQ 1">
+              <a href="&mvte:urls:PROD:auto_sep;Product_Code=&mvta:item:code;" title="&mvt:item:name;"><strong>&mvt:item:name;</strong></a>
+            <mvt:else>
+              <strong>&mvt:item:name;</strong>
+            </mvt:if>
+            <mvt:if expr="l.settings:item:upsold">
+              &nbsp;(Special Offer)
+            </mvt:if>
+            <br /><small>&mvt:item:code;</small>
+          </p>
+          <mvt:foreach iterator="option" array="item:options">
+            <mvt:if expr="l.settings:option:attr_code EQ 'giftcert'">
+              <mvt:assign name="l.settings:option:attr_prompt" value="'Certificate Code:'" />
+            <mvt:else>
+              <mvt:assign name="l.settings:option:attr_prompt" value="l.settings:option:attr_prompt" />
+            </mvt:if>
+            <p>
+              <mvt:if expr="l.settings:option:option_id">
+                <small>&mvt:option:attr_prompt; <strong>&mvt:option:opt_prompt;</strong></small>
+              <mvt:elseif expr="NOT ISNULL l.settings:option:data">
+                 <mvt:if expr="( l.settings:option:attr_code EQ 'digitaldownload' ) AND ( NOT ISNULL l.settings:option:digital_download_url )">
+                                <small><a href="&mvte:option:digital_download_url;" target="_blank">Digital Download</a></small>
+                            <mvt:else>
+                              <small>&mvt:option:attr_code;: <strong>&mvt:option:data;</strong></small>
+                            </mvt:if>
+                <small>&mvt:option:attr_prompt; <strong>&mvt:option:data;</strong></small>
+              <mvt:elseif expr="NOT ISNULL l.settings:option:data_long">
+                <small>&mvt:option:attr_prompt; <strong>&mvt:option:data_long;</strong></small>
+              <mvt:else>
+                <small>&mvt:option:attr_prompt;</small>
+              </mvt:if>
+            </p>
+          </mvt:foreach>
+          <mvt:foreach iterator="discount" array="item:discounts">
+            <mvt:if expr="l.settings:discount:display">
+              <p><em>&mvt:discount:descrip;: &mvt:discount:formatted_discount;</em></p>
+            </mvt:if>
+          </mvt:foreach>
+          <mvt:foreach iterator="discount" array="option:discounts">
+            <mvt:if expr="l.settings:discount:display">
+              <p><em>&mvt:discount:descrip;: &mvt:discount:formatted_discount;</em></p>
+            </mvt:if>
+          </mvt:foreach>
+        </div>
+        <div class="breaker clear medium-all-hidden"></div>
+        <div class="column offset-one-fourth one-fourth medium-offset-none medium-one-eighth align-left medium-align-center">
+          <p class="medium-all-hidden"><strong>Qty</strong></p>
+          <p>&mvte:item:quantity;</p>
+        </div>
+        <div class="column hide medium-show medium-one-eighth medium-align-center np">
+          <mvt:if expr="l.settings:item:variant_id EQ 0">
+            <mvt:assign name="l.settings:item:nonvariant_price" value="l.settings:item:options[1]:base_price + l.settings:item:base_price" />
+
+            <mvt:do file="g.Module_Store_Module_Currency" name="l.settings:item:formatted_nonvariant_price" value="CurrencyModule_AddFormatting( g.Store:currncy_mod, l.settings:item:nonvariant_price)" />
+            <p>&mvt:item:formatted_nonvariant_price;</p>
+          <mvt:else>
+            <mvt:if expr="l.settings:item:price EQ '0' OR l.settings:item:price EQ '0.00' OR l.settings:item:price EQ 0.00 OR l.settings:item:price EQ 0">
+              <p>&nbsp;</p>
+            <mvt:else>
+              <p>&mvt:item:formatted_base_price;</p>
+            </mvt:if>
+          </mvt:if>
+        </div>
+        <div class="column half medium-one-eighth medium-align-center np">
+          <p class="medium-all-hidden"><strong>Item Subtotal</strong></p>
+          <mvt:if expr="l.settings:item:variant_id EQ 0">
+            <mvt:assign name="l.settings:item:subtotal_nonvariant_price" value="l.settings:item:options[1]:subtotal_base_price + l.settings:item:subtotal_base_price" />
+
+            <mvt:do file="g.Module_Store_Module_Currency" name="l.settings:item:formatted_subtotal_nonvariant_price" value="CurrencyModule_AddFormatting( g.Store:currncy_mod, l.settings:item:subtotal_nonvariant_price)" />
+            <p>&mvt:item:formatted_subtotal_nonvariant_price;</p>
+          <mvt:else>
+            <mvt:if expr="l.settings:item:subtotal_base_price NE l.settings:item:subtotal">
+              <s>&mvt:item:formatted_subtotal_base_price;</s><br>
+            </mvt:if>
+            <p>&mvt:item:formatted_subtotal;</p>
+          </mvt:if>
+        </div>
+        <mvt:if expr="l.settings:item:order_status">
+          <br class="clear" />
+          <div class="column three-fourths offset-one-fourth order-status"><strong>Status:</strong> &mvt:item:order_status;</div>
+        </mvt:if>
+      </div>
+    </mvt:foreach>
+    <mvt:foreach iterator="coupon" array="order:coupons">
+      <div class="row basket-product-row clear">
+        <div class="column whole">
+          <mvt:if expr="NOT ISNULL l.settings:coupon:descrip">
+            Coupon - &mvt:coupon:code;: &mvt:coupon:descrip;
+          <mvt:else>
+            Coupon - &mvt:coupon:code;
+          </mvt:if>
+        </div>
+      </div>
+    </mvt:foreach>
+  </div>
+
+</div>
+<div class="column whole medium-one-fourth cart-summary">
+  <div class="row all-hidden medium-all-shown basket-header-row align-center">Cart Summary</div>
+    <div class="order-info-row row">
+      <div class="breaker"></div>
+      <mvt:foreach iterator="charge" array="order:charges">
+        <span class="column whole align-right"><em>&mvt:charge:descrip;:</em> &mvt:charge:formatted_disp_amt;</span>
+      </mvt:foreach>
+      <span class="column whole align-right"><strong>Total: &mvt:order:formatted_total;</strong></span>
+      <div class="breaker clear"></div>
+      <mvt:foreach iterator="payment" array="order:payments">
+        <p class="column whole align-right nm">
+          <mvt:if expr="l.settings:payment:type EQ 6">
+            <em>Refund: &mvt:payment:desc;: &mvt:payment:formatted_amount;</em>
+          <mvt:else>
+            <em>Payment: &mvt:payment:desc;: &mvt:payment:formatted_amount_negative;</em>
+          </mvt:if>
+        </p>
+      </mvt:foreach>
+      
+    </div>
+</div>

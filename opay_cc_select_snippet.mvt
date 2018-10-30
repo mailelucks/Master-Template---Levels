@@ -1,0 +1,5 @@
+<mvt:if expr="l.settings:payment:desc CIN l.settings:method:name">
+  <mvt:assign name="l.settings:method:checked" value="'checked'" />'
+<mvt:else>
+  <mvt:assign name="l.settings:method:checked" value="''" />
+</mvt:if>
