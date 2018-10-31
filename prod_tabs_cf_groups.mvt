@@ -29,6 +29,8 @@
 
 </mvt:foreach>
 
+<mvt:comment>CLIENT EXAMPLE</mvt:comment>
+
   <div class="column whole product-information--details">
     <h2 class="align-center bold roboto-condensed">Product Details</h2>
     <div class="column wrap whole tabs__container">
@@ -37,6 +39,8 @@
             <mvt:if expr="len_var(l.settings:product:descrip) GT 0">
               <li class="width-auto"><h3 class="nm uppercase"><a href="#specs">Product Specifications</a></h3></li>
             </mvt:if>
+            
+            <mvt:comment>loop through groups to create the tabs</mvt:comment>
             <mvt:foreach iterator="info_group" array="info_groups">
               <mvt:if expr="miva_array_elements(l.settings:info_group:fields) GT 0">
                 <li class="width-auto"><h3 class="nm"><a href="#&mvt:info_group:code;">&mvt:info_group:name;</a></h3></li>
@@ -54,6 +58,8 @@
             </div>
           </div>
         </mvt:if>
+
+        <mvt:comment>loop through groups to create the content containers</mvt:comment>
         <mvt:foreach iterator="info_group" array="info_groups">
           <mvt:if expr="miva_array_elements(l.settings:info_group:fields) GT 0">
             <div id="&mvte:info_group:code;">
