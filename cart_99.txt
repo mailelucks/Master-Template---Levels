@@ -1,0 +1,108 @@
+<div class="column x-large-two-tenths large-one-fourth one-fifth align-right float-right desktop__basket nlp">
+	<div class="column whole large-np nlp">
+	  <a href="&mvte:urls:BASK:auto;" rel="nofollow" id="js-mini-basket" class="mini-basket">
+	   <mvt:comment> <span class="mini-basket-icon" data-icon="&#xe07a;" title="Cart"></span></mvt:comment>
+	   <span class="mini-basket-text uppercase bold medium-inline-block hide">My Cart <span data-icon="&#x43;" class="mini-basket-down-arrow theme-primary"></span></span>
+	    <span class="mini-basket-inner bg-theme-primary">
+	      	<span class="mini-basket-count bold inline-block" id="js-mini-basket-count">
+	      		<mvt:if expr="l.settings:global_minibasket:basket_count LT 100">
+	      			&mvte:global_minibasket:basket_count;
+	      		<mvt:else>
+	      			99+
+	      		</mvt:if>
+	  		</span>
+	    </span>
+	  </a>
+	</div>
+</div>
+
+
+function addToCart () {
+	$('#js-add-to-cart').on('click', function (e) {
+		var purchaseForm = $('#js-purchase-product');
+		// Check the form is not currently submitting
+		if (purchaseForm.data('formstatus') !== 'submitting') {
+			// Set up variables
+			var form = purchaseForm,
+				formData = form.serialize(),
+				formUrl = form.attr('action').replace('^https?:', ''),
+				formMethod = form.attr('method'),
+				responseMessage = $('#js-purchase-message'),
+				miniBasket = $('#js-mini-basket-container'),
+				processingImage = $('#js-processing-purchase'),
+				purchaseButton = $(this),
+				purchaseButtonText = purchaseButton.val();
+
+			// Add status data to form
+			form.data('formstatus', 'submitting');
+
+			// Show processing message
+			processingImage.show();
+			purchaseButton.toggleDisabled().val('Processing...');
+			responseMessage.html('').hide();
+
+			// Send data to server for validation
+			$.ajax({
+				url: formUrl,
+				type: formMethod,
+				cache: false,
+				data: formData,
+				success: function(data, textStatus, jqXHR) {
+					if (data.search(/id="js-BASK"/i) != -1) {
+						$('html, body').animate({scrollTop: '0px'}, 250);
+						var responseMiniBasket = $(data).find('#js-mini-basket-container'),
+							miniBasketCount = responseMiniBasket.contents()[1].getAttribute('data-itemcount'),
+							miniBasketSubtotal = ' ' + responseMiniBasket.contents()[1].getAttribute('data-subtotal'),
+							miniBasketLinkCount = $('#js-mini-basket-count, #js-mobile-basket-button .notification'),
+							miniBasketLinkSubtotal = $('#js-mini-basket-subtotal');
+
+							//change text if high quantity
+							if(miniBasketCount > 99) {
+								miniBasketCount = '99+';
+							}
+							
+						miniBasketLinkCount.text(miniBasketCount); // Update basket quantity (display only)
+						miniBasketLinkSubtotal.text(miniBasketSubtotal); // Update basket subtotal (display only)
+
+						miniBasket.html(responseMiniBasket.contents()).addClass('open');
+						setTimeout(function () {
+							miniBasket.removeClass('open');
+						}, 5000);
+
+						// Re-Initialize Attribute Machine (if it is active)
+						if (typeof attrMachCall !== 'undefined') {
+							attrMachCall.Initialize();
+						}
+					}
+					else if(data.search(/id="js-PATR"/i) != -1) {
+						var missingAttrs = [];
+						form.find('.required').each(function () {
+							missingAttrs.push(' ' + $(this).attr('title'));
+						});
+						responseMessage.html('All <em class="red">Required</em> options have not been selected.<br />Please review the following options: <span class="red">' + missingAttrs + '</span>.').fadeIn().delay(5000).fadeOut();
+					}
+					else if(data.search(/id="js-PLMT"/i) != -1) {
+						responseMessage.html('We do not have enough of the Size/Color you have selected.<br />Please adjust your quantity.').fadeIn().delay(3000).fadeOut();
+					}
+					else if(data.search(/id="js-POUT"/i) != -1) {
+						responseMessage.html('The Size/Color you have selected is out of stock.<br />Please review your options or check back later.').fadeIn().delay(3000).fadeOut();
+					}
+					else {
+						responseMessage.html('Please review options.').fadeIn().delay(3000).fadeOut();
+					}
+
+					// Hide processing message and reset formstatus
+					processingImage.hide();
+					purchaseButton.toggleDisabled().val(purchaseButtonText);
+					form.data('formstatus', 'idle');
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+				}
+			});
+		}
+		// Prevent form from submitting
+		e.preventDefault();
+		e.stopImmediatePropagation();
+	});
+}
+addToCart();
