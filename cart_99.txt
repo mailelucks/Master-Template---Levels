@@ -4,13 +4,11 @@
 	   <mvt:comment> <span class="mini-basket-icon" data-icon="&#xe07a;" title="Cart"></span></mvt:comment>
 	   <span class="mini-basket-text uppercase bold medium-inline-block hide">My Cart <span data-icon="&#x43;" class="mini-basket-down-arrow theme-primary"></span></span>
 	    <span class="mini-basket-inner bg-theme-primary">
-	      	<span class="mini-basket-count bold inline-block" id="js-mini-basket-count">
-	      		<mvt:if expr="l.settings:global_minibasket:basket_count LT 100">
-	      			&mvte:global_minibasket:basket_count;
-	      		<mvt:else>
-	      			99+
-	      		</mvt:if>
-	  		</span>
+	      	<mvt:if expr="l.settings:global_minibasket:basket_count LT 100">
+      			&mvte:global_minibasket:basket_count;
+      		<mvt:else>
+      			99+
+      		</mvt:if>
 	    </span>
 	  </a>
 	</div>
