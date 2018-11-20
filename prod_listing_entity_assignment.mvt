@@ -1,0 +1,7 @@
+<mvt:if expr="l.settings:page:code EQ 'CTGY'">
+  <mvt:assign name="l.settings:page_iterator" value="l.settings:category_listing" />
+<mvt:elseif expr="l.settings:page:code EQ 'SRCH'">
+  <mvt:assign name="l.settings:page_iterator" value="l.settings:search_results" />
+<mvt:elseif expr="l.settings:page:code EQ 'PLST'">
+  <mvt:assign name="l.settings:page_iterator" value="l.settings:all_products" />
+</mvt:if>
