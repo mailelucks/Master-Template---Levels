@@ -27,6 +27,9 @@
   <mvt:comment>update info group structure with updated data</mvt:comment>
   <mvt:assign name="l.success" value="miva_array_insert_var( l.settings:info_groups, l.settings:info_group, -1 )" />
 
+  <mvt:comment>clear info_group field</mvt:comment>
+  <mvt:assign name="l.settings:info_group" value="''" />
+
 </mvt:foreach>
 
 <mvt:comment>CLIENT EXAMPLE</mvt:comment>

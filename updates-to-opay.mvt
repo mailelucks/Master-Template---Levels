@@ -1,0 +1,12 @@
+<mvt:item name="readytheme" param="contentsection( 'checkout_steps' )" />
+			<mvt:if expr="l.settings:payment:url EQ g.domain:mm_surl">
+				<mvt:assign name="l.settings:payment:url" value="l.settings:urls:invc:secure" />
+			</mvt:if>
+			<h1>Payment</h1>
+			<form method="post" action="&mvt:payment:url;" id="js-opay-form" class="clearfix">
+				<input type="hidden" name="Action" value="AUTH" />
+				<mvt:comment><input type="hidden" name="Screen" value="INVC" />
+				<input type="hidden" name="Store_Code" value="&mvte:global:Store_Code;" /></mvt:comment>
+
+				reassign the form action, sometimes this doesn't load the full path. also remove these hidden inputs, no longer needed
+				
